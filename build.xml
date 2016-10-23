@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JavaJunitAnt" default="main" basedir=".">
+	<presetdef name="javac">
+		<javac includeantruntime="false" />
+	</presetdef>
+	<description>
+		Create a Java Project (JAR) with Ant build script
+	</description>
+	<property file="build.properties" />
+	<target name="main">
+		<echo> Welcome to Ant World!</echo>
+		<echo> Apache Ant version is ${ant.version} ${sitename}</echo>
+		<echo> You are using using Java ${ant.java.version} </echo>
+
+	</target>
+	<target name="clean" depends="main">
+		<delete dir="${build.dir}" />
+		<delete dir="report" />
+	</target>
+
+	<target name="compile" depends="clean">
+		<mkdir dir="${build.dir}/classes" />
+		<javac srcdir="src" destdir="${build.dir}/classes">
+			<classpath>
+				<fileset dir="${basedir}">
+					<include name="libs/*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+	<!--
+	<target name="jar">
+		<mkdir dir="build/jar" />
+		<jar destfile="build/jar/JavaJunitAntProject.jar" basedir="build/classes">
+			<manifest>
+				<attribute name="Main-Class" value="com.HelloJava" />
+			</manifest>
+		</jar>
+	</target>-->
+
+	<!--<target name="run">
+		<java jar="build/jar/JavaJunitAntProject.jar" fork="true" />
+	</target>
+	-->
+<!--	<target name="generate-javadoc">
+			<mkdir dir="docs" />
+			<javadoc packagenames="com.*" sourcepath="src" destdir="docs"
+				version="true" windowtitle="JavaAntApplication">
+				<doctitle><![CDATA[= Algo Application =]]></doctitle>
+	               <bottom>
+	                  <![CDATA[Copyright © 2016. All Rights Reserved.]]>
+	               </bottom>
+	               <group title = "com packages" packages = "com.*"/>
+	        </javadoc>
+	        <echo message = "java doc has been generated!" />
+	    
+		</target>
+-->
+	<target name="unittest" depends="compile">
+			<mkdir dir="report" />
+		   <junit haltonfailure="yes" showoutput="yes"  printsummary="yes">
+		   	  <classpath>
+		   	  	<pathelement location="build/classes"/>
+			   	 <fileset dir="${basedir}">
+					<include name="libs/*.jar"/>
+				</fileset>
+		   	  </classpath>
+		      <test name="com.tests.TestCases" todir="report" />
+		   	<formatter type="xml" />
+		   </junit>
+		</target>
+	<target name="testreport" depends="unittest">
+			<mkdir dir="report/html" />
+		        <junitreport todir="report">
+		            <fileset dir="report">
+		                <include name="TEST-*.xml" />
+		            </fileset>
+		            <report format="noframes" todir="report/html" />
+		        </junitreport>
+		    </target> 
+</project>
